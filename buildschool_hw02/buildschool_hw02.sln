@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "change", "change\change.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rail_transport_winform", "rail_transport_winform\rail_transport_winform.csproj", "{17C33D12-E9ED-4402-A8CC-D6E3EA1A8C64}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "fortest", "fortest\fortest.csproj", "{96816765-E2AF-4522-B988-9C303A5122D5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{17C33D12-E9ED-4402-A8CC-D6E3EA1A8C64}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{17C33D12-E9ED-4402-A8CC-D6E3EA1A8C64}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{17C33D12-E9ED-4402-A8CC-D6E3EA1A8C64}.Release|Any CPU.Build.0 = Release|Any CPU
+		{96816765-E2AF-4522-B988-9C303A5122D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{96816765-E2AF-4522-B988-9C303A5122D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{96816765-E2AF-4522-B988-9C303A5122D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{96816765-E2AF-4522-B988-9C303A5122D5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
