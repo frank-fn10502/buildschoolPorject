@@ -78,7 +78,7 @@ namespace rail_transport_winform
             decimal price = findPrice(start, end);
             price = (returTticket) ? price * 2 : price;
 
-            dec +=  $"{(returTticket ? "來回票" : "單程票")}\n" +
+            dec +=  $"{(returTticket ? "來回票" : "單程票")}{(concessionTicket ? " ,優惠票" : "")}\n" +
                     $"從<{startName}>到<{endName}>\n" + 
                     $"價錢為:{this.Discount(price , returTticket , concessionTicket)}";
 
