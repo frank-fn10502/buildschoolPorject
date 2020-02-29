@@ -12,6 +12,7 @@ namespace parking_lot_winform
     class CostRegulation
     {
         private int _unit;
+        private int _remaindUnit;
         private int _remain;
         private int _cost;
         private Dictionary<string, Function> _dict1;
@@ -23,61 +24,65 @@ namespace parking_lot_winform
         {
             _dict1 = new Dictionary<string, Function>();
             _dict2 = new Dictionary<string, string>();
-            _dict1["2小時內，每半小時30元"] = new Function(this.R1);
-            _dict1["超過2小時但未滿4小時，每半小時40元"] = new Function(this.R2);
             _dict1["超過4小時以上每半小時60元"] = new Function(this.R3);
+            _dict1["超過2小時但未滿4小時，每半小時40元"] = new Function(this.R2);
+            _dict1["2小時內，每半小時30元"] = new Function(this.R1);
+            
+            
 
             _dict2["備註"] = "未滿半小時部份不計算";
         }
         public void R0(int min)
         {
-            _unit = min / 30;
+            _cost = 0;
+            _remaindUnit = _unit = min / 30;
             _remain = min % 30;
         }
         public bool R1(int min)
         {
-            R0(min);
-            if (min <= 2 * 60)
-            {
-                _cost = 30 * _unit;
-                return true;
-            }
-            return false;
+            var period = _remaindUnit;
+            var cost = 30 * period;
+            _cost += cost;
+            return cost != 0;
         }
         public bool R2(int min)
         {
-            R0(min);
-            if (min <= 4 * 60)
-            {
-                _cost = 40 * _unit;
-                return true;
-            }
-            return false;
+            var period = GetPeriodHalfHours(4);
+            var cost = 40 * period;
+            _cost += cost;
+            return cost != 0;
         }
         public bool R3(int min)
         {
-            R0(min);
-            if (min > 4 * 60)
-            {
-                _cost = 40 * _unit;
-                return true;
-            }
-            return false;
+            var period = GetPeriodHalfHours(8);
+            var cost = 60 * period;
+            _cost += cost;
+            return cost != 0;
         }
-
+        private int GetPeriodHalfHours(int period)
+        {
+            int result = _remaindUnit - period;
+            if (result < 0) result = 0;
+            _remaindUnit -= result;
+            return result;
+        }
         public string Cal(TimeSpan ts)
         {
-            int min = (int)ts.TotalMinutes; 
-            foreach(var d in _dict1)
+            int min = (int)ts.TotalMinutes;
+            R0(min);
+
+            string str = $"符合規則:\n";
+
+            foreach (var d in _dict1)
             {
                 if(d.Value(min))
                 {
-                    return $"符合規則:\n{d.Key}\n" +
-                           $"需繳{_cost}元，總計時間為{ts}\n" +
-                           $"經過{_unit}個30分鐘，剩餘{_remain}分鐘(不列入計算)\n";
+                    str += $"\t{d.Key}\n";   
                 }
             }
-            return "有問題!!!";
+            str += $"\n需繳{_cost}元，總計時間為{ts}\n" +
+                   $"經過{_unit}個30分鐘，剩餘{_remain}分鐘(不列入計算)\n";
+            return str;
         }
         public override string ToString()
         {
