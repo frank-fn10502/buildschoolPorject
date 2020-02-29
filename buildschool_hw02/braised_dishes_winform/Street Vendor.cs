@@ -8,8 +8,16 @@ namespace braised_dishes_winform
 {
     class Street_Vendor
     {
+        private int _remainder;
         public List<Food> FoodList { get; set; }
 
+        private int GetNumber(int money)
+        {
+            int result = _remainder / money;
+            _remainder %= money;
+
+            return result;
+        }
         public int TotalCost()
         {
             int cost = 0;
@@ -32,15 +40,15 @@ namespace braised_dishes_winform
         }
         public string Check()
         {
-            int cost = TotalCost();
+            _remainder = TotalCost();
             Dictionary<string, int> dict = new Dictionary<string, int>();
-            dict["1000元"] = cost/ 1000;
-            dict["500元"] = (cost % 1000) / 500;
-            dict["100元"] = ((cost % 1000) % 500) / 100;
-            dict["50元"] = (cost % 100) / 50;
-            dict["10元"] = ((cost % 100) % 50) / 10;
-            dict["5元"] = (cost % 10) / 5;
-            dict["1元"] = (cost % 10) % 5;
+            dict["1000元"] = GetNumber(1000);
+            dict["500元"] = GetNumber(500); 
+            dict["100元"] = GetNumber(100);
+            dict["50元"] = GetNumber(50);
+            dict["10元"] = GetNumber(10);
+            dict["5元"] = GetNumber(5);
+            dict["1元"] = _remainder;
 
             List<KeyValuePair<string, int>> results = dict.ToList();
             string str = $"總計{TotalCost()}，應收:\n";
