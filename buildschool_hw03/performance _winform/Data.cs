@@ -7,10 +7,6 @@ using System.Threading.Tasks;
 
 namespace performance__winform
 {
-    interface IParsable
-    {
-        List<string> Parse(string path);
-    }
     class Merchandise
     {
         public string Name { get; set; }
@@ -18,145 +14,149 @@ namespace performance__winform
     }
     class Salesman
     {
-        private int? _total;
-
         public string Name { get; set; }
-        public int? Total
-        {
-            get
-            {
-                if (_total == null)
-                    _total = MerchandiseQuantityList.Select(x => x.Key.Price * x.Value).Sum();
-
-                return _total;
-            }
-        }
-        public Dictionary<Merchandise ,int> MerchandiseQuantityList { get; private set; }
-
-        public Salesman()
-        {
-            MerchandiseQuantityList = new Dictionary<Merchandise ,int>();
-            _total = null;
-        }
     }
+    class MS
+    {
+        public string MerchandiseName { get; set; }
+        public string SalesmanName { get; set; }
+        public int Quantity { get; set; }
 
+    }
     class PerformanceScale
     {
-        private List<Merchandise> _merchandiseList;
-        private List<Salesman> _salesmenList;
-
-        private List<int> _merchandiseTotalSalesList;
-
-        private List<List<string>> _salesmenDisplayList;
-        private List<List<string>> _merchandiseDisplayList;
-
-        public List<Merchandise> MerchandiseList { get { return _merchandiseList; } }
-        public List<List<string>> SalesmenDisplayList
-        {  
-            get 
-            {
-                if(_salesmenDisplayList == null)
-                {
-                    _salesmenDisplayList = new List<List<string>>();
-                    foreach(var item in _salesmenList)
-                    {
-                        List<string> row = new List<string>();
-                        row.Add(item.Name);
-                        foreach(var i in item.MerchandiseQuantityList.Values)
-                        {
-                            row.Add(i.ToString());
-                        }
-                        row.Add(item.Total.ToString());
-
-                        _salesmenDisplayList.Add(row);
-                    }
-                }
-                    
-                return _salesmenDisplayList;
-            } 
-        }
-        public List<List<string>> MerchandiseDisplayList
-        {
-            get
-            {
-                if (_merchandiseTotalSalesList == null)
-                    _merchandiseTotalSalesList = _merchandiseList.Select(x => 
-                       _salesmenList.Select(y => y.MerchandiseQuantityList[x]).Sum() * x.Price
-                    ).ToList();
-
-                if(_merchandiseDisplayList == null)
-                {
-                    _merchandiseDisplayList = new List<List<string>>();
-                    for (int i = 0 ; i < _merchandiseList.Count ; i++)
-                    {
-                        List<string> row = new List<string>();
-                        row.Add(_merchandiseList[i].Name);
-                        row.Add(_merchandiseList[i].Price.ToString());
-                        row.Add((_merchandiseTotalSalesList[i] / _merchandiseList[i].Price).ToString());
-                        row.Add(_merchandiseTotalSalesList[i].ToString());
-
-                        _merchandiseDisplayList.Add(row);
-                    }
-                }
-                return _merchandiseDisplayList;
-            }
-        }
-        public string bestSalesman 
-        { 
-            get
-            {
-                Salesman salesman = _salesmenList.OrderByDescending(x => x.Total).First(x => true);
-                return $"最佳銷售員: { salesman.Name} ,總金額為: { salesman.Total}";
-            }
-        }        
-        public string bestMerchandise
-        {
-            get
-            {
-                int max = _merchandiseTotalSalesList.Max();
-                int index = _merchandiseTotalSalesList.IndexOf(max);
-
-                return $"銷售總金額為最多的產品: {_merchandiseList[index].Name} ,總金額為:{max}";
-            }
-        }
+        public List<Merchandise> MerchandiseList { get; private set; }
+        public List<Salesman> SalesmanList { get; private set; }
+        public List<MS> MSList { get; private set; }
 
         public PerformanceScale()
         {
-            InitMerchandiseList(@"../data/Merchandise.txt");
-            InitSalesmeList(@"../data/Salesman.txt");
+            Init(@"../data/Merchandise.txt" ,@"../data/Salesman.txt");
         }
 
-        public void InitMerchandiseList(string path)
+        private void Init(string Mpath1 ,string Spath2)
         {
-            _merchandiseList = new List<Merchandise>();
-            if (File.Exists(path))
+            MerchandiseList = new List<Merchandise>();
+            if (File.Exists(Mpath1))
             {
-                foreach (var lines in File.ReadLines(path))
+                foreach (var lines in File.ReadLines(Mpath1))
                 {
                     var item = lines.Split(',');
                     Merchandise merchandise = new Merchandise() { Name = item[0] ,Price = int.Parse(item[1]) };
-                    _merchandiseList.Add(merchandise);
+                    MerchandiseList.Add(merchandise);
                 }
             }
-        }        
-        public void InitSalesmeList(string path)
-        {
-            _salesmenList = new List<Salesman>();
-            if (File.Exists(path))
+
+            SalesmanList = new List<Salesman>();
+            MSList = new List<MS>();
+            if (File.Exists(Spath2))
             {
-                foreach (var lines in File.ReadLines(path))
+                foreach (var lines in File.ReadLines(Spath2))
                 {
                     var item = lines.Split(' ');
                     Salesman salesman = new Salesman() { Name = item[0] };
+                    SalesmanList.Add(salesman);
 
                     for (int i = 1 ; i < item.Length ; i++)
                     {
-                        var key = _merchandiseList[i - 1];
-                        salesman.MerchandiseQuantityList[key] = int.Parse(item[i]);
+                        MS ms = new MS()
+                        {
+                            SalesmanName = salesman.Name ,
+                            MerchandiseName = MerchandiseList[i - 1].Name ,
+                            Quantity = int.Parse(item[i])
+                        };
+                        MSList.Add(ms);
                     }
-                    _salesmenList.Add(salesman);
                 }
             }
+        }
+
+        public List<List<string>> SalesmanTotal()
+        {
+            var results =
+                from s in SalesmanList
+                join ms in MSList
+                on s.Name equals ms.SalesmanName
+                join m in MerchandiseList
+                on ms.MerchandiseName equals m.Name
+                select new { SalesmanName = s.Name ,MerchandiseName = ms.MerchandiseName ,Quantity = ms.Quantity ,price = m.Price };
+
+            var tempList = results.GroupBy(x => x.SalesmanName).Select(x => 
+                           new 
+                           { 
+                               SalesmanName = x.Key ,
+                               merList = x.Select(y => y.Quantity) ,
+                               Total = x.Select(y => y.price * y.Quantity).Sum()
+                           });
+
+            List<List<string>> r = new List<List<string>>();
+            foreach (var item in tempList)
+            {
+                List<string> str = new List<string>();
+                str.Add(item.SalesmanName);
+                foreach (var i in item.merList)
+                {
+                    str.Add(i.ToString());
+                }
+                str.Add(item.Total.ToString());
+
+                r.Add(str);
+            }
+            return r;
+        }
+        public List<List<string>> MerchandiseTotal()
+        {
+            var result =
+                from ms in MSList
+                join m in MerchandiseList
+                on ms.MerchandiseName equals m.Name
+                select new { mName = m.Name ,Quantity = ms.Quantity ,Price = m.Price };
+
+            var tempList = result.GroupBy(x => x.mName).Select(x => 
+                                  new 
+                                  { 
+                                      mName = x.Key ,
+                                      Total = x.Select(y => y.Price * y.Quantity).Sum(),
+                                      price = x.Select(y => y.Price).Max(),
+                                      quantity = x.Select(y => y.Quantity).Sum(),
+                                  });
+
+            List<List<string>> r = new List<List<string>>();
+            foreach (var item in tempList)
+            {
+                r.Add(new List<string>()
+                {
+                    item.mName,
+                    item.price.ToString(),
+                    item.quantity.ToString(),
+                    item.Total.ToString()
+                });
+            }
+            return r;
+        }
+
+        public string PrintOther()
+        {
+            var results =
+                from s in SalesmanList
+                join ms in MSList
+                on s.Name equals ms.SalesmanName
+                join m in MerchandiseList
+                on ms.MerchandiseName equals m.Name
+                select new { SalesmanName = s.Name ,MerchandiseName = ms.MerchandiseName ,Quantity = ms.Quantity ,price = m.Price };
+
+            var salesmanName = results.GroupBy(x => x.SalesmanName)
+                                      .Select(x => new { name = x.Key ,Total = x.Select(y => y.price * y.Quantity).Sum() })
+                                      .OrderByDescending(x => x.Total)
+                                      .First(x => true);
+
+            var merchandiseName = results.GroupBy(x => x.MerchandiseName)
+                                         .Select(x => new { name = x.Key ,Total = x.Select(y => y.price * y.Quantity).Sum() })
+                                         .OrderByDescending(x => x.Total)
+                                         .First(x => true);
+                                         
+                                   return $"最佳銷售員: { salesmanName.name} ,總金額為: { salesmanName.Total} {Environment.NewLine}" +
+                                          $"銷售總金額為最多的產品: {merchandiseName.name} ,總金額為:{merchandiseName.Total}";
         }
     }
 }

@@ -26,7 +26,7 @@ namespace performance__winform
 
         private void DisplayOther()
         {
-            textBox1.Text = $"{_performanceScale.bestSalesman}\r\n{_performanceScale.bestMerchandise}";
+            textBox1.Text = _performanceScale.PrintOther();
         }
 
         private void DisplayMerchandise()
@@ -36,7 +36,7 @@ namespace performance__winform
             merchandiseGridView.Columns.Add("quantity" ,"總量");
             merchandiseGridView.Columns.Add("total" ,"總額");
 
-            foreach (var item in _performanceScale.MerchandiseDisplayList)
+            foreach (var item in _performanceScale.MerchandiseTotal())
             {
                 merchandiseGridView.Rows.Add(item.ToArray());
             }
@@ -53,7 +53,7 @@ namespace performance__winform
             }
             salesmanGridView.Columns.Add("Total" ,"總額");
 
-            foreach (var item in _performanceScale.SalesmenDisplayList)
+            foreach (var item in _performanceScale.SalesmanTotal())
             {
                 salesmanGridView.Rows.Add(item.ToArray());
             }
