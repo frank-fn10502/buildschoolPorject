@@ -50,7 +50,7 @@
             // merchandiseGridView
             // 
             this.merchandiseGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.merchandiseGridView.Location = new System.Drawing.Point(13, 283);
+            this.merchandiseGridView.Location = new System.Drawing.Point(13, 274);
             this.merchandiseGridView.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.merchandiseGridView.Name = "merchandiseGridView";
             this.merchandiseGridView.RowHeadersWidth = 51;
@@ -70,18 +70,18 @@
             // textBox1
             // 
             this.textBox1.BackColor = System.Drawing.SystemColors.AppWorkspace;
-            this.textBox1.Location = new System.Drawing.Point(500, 14);
+            this.textBox1.Location = new System.Drawing.Point(13, 446);
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
             this.textBox1.ReadOnly = true;
-            this.textBox1.Size = new System.Drawing.Size(543, 433);
+            this.textBox1.Size = new System.Drawing.Size(480, 119);
             this.textBox1.TabIndex = 3;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1058, 456);
+            this.ClientSize = new System.Drawing.Size(503, 580);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.merchandiseGridView);
