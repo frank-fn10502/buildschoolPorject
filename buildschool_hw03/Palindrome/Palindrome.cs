@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Palindrome
 {
-    class Palindrome
+    public class Palindrome
     {
         public bool checkIsPalindrome(string str)
         {

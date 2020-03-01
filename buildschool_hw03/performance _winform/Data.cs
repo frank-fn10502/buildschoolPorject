@@ -81,9 +81,9 @@ namespace performance__winform
                 on ms.MerchandiseName equals m.Name
                 select new { SalesmanName = s.Name ,MerchandiseName = ms.MerchandiseName ,Quantity = ms.Quantity ,price = m.Price };
 
-            var tempList = results.GroupBy(x => x.SalesmanName).Select(x => 
-                           new 
-                           { 
+            var tempList = results.GroupBy(x => x.SalesmanName).Select(x =>
+                           new
+                           {
                                SalesmanName = x.Key ,
                                merList = x.Select(y => y.Quantity) ,
                                Total = x.Select(y => y.price * y.Quantity).Sum()
@@ -112,13 +112,13 @@ namespace performance__winform
                 on ms.MerchandiseName equals m.Name
                 select new { mName = m.Name ,Quantity = ms.Quantity ,Price = m.Price };
 
-            var tempList = result.GroupBy(x => x.mName).Select(x => 
-                                  new 
-                                  { 
+            var tempList = result.GroupBy(x => x.mName).Select(x =>
+                                  new
+                                  {
                                       mName = x.Key ,
-                                      Total = x.Select(y => y.Price * y.Quantity).Sum(),
-                                      price = x.Select(y => y.Price).Max(),
-                                      quantity = x.Select(y => y.Quantity).Sum(),
+                                      Total = x.Select(y => y.Price * y.Quantity).Sum() ,
+                                      price = x.Select(y => y.Price).Max() ,
+                                      quantity = x.Select(y => y.Quantity).Sum() ,
                                   });
 
             List<List<string>> r = new List<List<string>>();
@@ -154,9 +154,9 @@ namespace performance__winform
                                          .Select(x => new { name = x.Key ,Total = x.Select(y => y.price * y.Quantity).Sum() })
                                          .OrderByDescending(x => x.Total)
                                          .First(x => true);
-                                         
-                                   return $"最佳銷售員: { salesmanName.name} ,總金額為: { salesmanName.Total} {Environment.NewLine}" +
-                                          $"銷售總金額為最多的產品: {merchandiseName.name} ,總金額為:{merchandiseName.Total}";
+
+            return $"最佳銷售員: { salesmanName.name} ,總金額為: { salesmanName.Total} {Environment.NewLine}" +
+                   $"銷售總金額為最多的產品: {merchandiseName.name} ,總金額為:{merchandiseName.Total}";
         }
     }
 }
