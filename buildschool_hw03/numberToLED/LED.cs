@@ -6,22 +6,12 @@ using System.Threading.Tasks;
 
 namespace numberToLED
 {
-    class LED
+    class NumberLED
     {
-        protected static readonly List<List<string>> Pattern = new List<List<string>>()
-        {
-            new List<string>(){" " ,"_" ," "},
-            new List<string>(){"|" ,"_" ,"|"},
-            new List<string>(){"|" ,"_" ,"|"}
-        };
-    }
-    class NumberLED :LED
-    {
-        public List<List<int>> SwitchList { get; set; }
+        public List<List<string>> Pattern { get; set; }
 
-        public NumberLED(List<List<int>> switchList)
+        public NumberLED()
         {
-            SwitchList = switchList;
         }
         public void Show(int left ,int ybase = 0)
         {
@@ -30,41 +20,35 @@ namespace numberToLED
                 Console.SetCursorPosition(left ,i + ybase);
                 for (int j = 0 ; j < Pattern[i].Count ; j++)
                 {
-                    if(SwitchList[i][j] == 1)
-                    {
-                        Console.Write(Pattern[i][j]);
-                    }
-                    else
-                    {
-                        Console.Write(" ");
-                    }
+                    Console.Write(Pattern[i][j]);
                 }
             }
         }
     }
     class Builder
     {
-        private static List<List<int>> _switchList;
+        private NumberLED _numberLED;
 
-        public Builder getBuild()
+        public Builder()
         {
-            _switchList = new List<List<int>>()
+            _numberLED = new NumberLED();
+
+            _numberLED.Pattern = new List<List<string>>()
             {
-                new List<int>(){1 ,1 ,1},
-                new List<int>(){1 ,1 ,1},
-                new List<int>(){1 ,1 ,1}
+                new List<string>(){" " ,"_" ," "},
+                new List<string>(){"|" ,"_" ,"|"},
+                new List<string>(){"|" ,"_" ,"|"}
             };
-            return this;
         }
         public Builder Disable(int row ,int col)
         {
-            _switchList[row][col] = 0;
+            _numberLED.Pattern[row][col] = " ";
 
             return this;
         }
-        public List<List<int>> Done()
+        public NumberLED Build()
         {
-            return _switchList;
+            return _numberLED;
         }
     }
 }
